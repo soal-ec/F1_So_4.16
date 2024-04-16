@@ -21,6 +21,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.*;
 
 public class HelloApplication extends Application {
     @Override
@@ -102,17 +103,101 @@ public class HelloApplication extends Application {
         btnLogin.setFont(Font.font(40));
         grid.add(btnLogin, 0, 3, 2, 1);
 
+        Button btnRegister = new Button("Register");
+        btnLogin.setFont(Font.font(40));
+        grid.add(btnRegister, 0, 4, 2, 1);
+
+        Button btnNuke = new Button("Nuke DB");
+        btnLogin.setFont(Font.font(40));
+        grid.add(btnNuke, 0, 5, 2, 1);
+
         btnLogin.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                System.out.println("Hello");
-                try {
-                    Parent p = FXMLLoader.load(getClass().getResource("homepage.fxml"));
-                    Scene s = new Scene(p);
-                    stage.setScene(s);
-                    stage.show();
-                } catch (IOException e) {
+                System.out.println("Logging in...");
+                String username = tfUsername.getText();
+                String password = pfPassword.getText();
+                try (Connection c = MySQLConnection.getConnection()) {
+                    Statement statement = c.createStatement();
+                    String query = "SELECT username FROM users";
+                    statement.execute(query);
+                    System.out.println("Read Data Successful");
+                    ResultSet res = statement.executeQuery(query);
+                    while (res.next()) {
+                        if (res.getString("username").equals(username)) {
+                            System.out.println("Username found.");
+                            statement = c.createStatement();
+                            query = "SELECT password FROM users WHERE username == ?";
+                            //statement.setString(1, password);
+                            statement.execute(query);
+                            System.out.println("Read Data Successful");
+                            res = statement.executeQuery(query);
+
+                            if (res.getString("password").equals(password)) {
+                                System.out.println("Welcome to the club");
+                                try {
+                                    Parent p = FXMLLoader.load(getClass().getResource("homepage.fxml"));
+                                    Scene s = new Scene(p);
+                                    stage.setScene(s);
+                                    stage.show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                System.out.println("Incorrect Password.");
+                                return;
+                            }
+                        }
+                    }
+                    System.out.println("Username not found.");
+                } catch (SQLException e) {
                     e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+
+            }
+        });
+
+        btnRegister.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                System.out.println("Registering user...");
+                String username = tfUsername.getText();
+                String password = pfPassword.getText();
+                if (username.equals("") || password.equals("")) {
+                    System.out.println("Cannot register empty fields.");
+                    return;
+                }
+                try (Connection c = MySQLConnection.getConnection();
+                     PreparedStatement statement = c.prepareStatement(
+                             "INSERT INTO users (username, password) VALUES (?, ?)"
+                     )) {
+                    statement.setString(1, username);
+                    statement.setString(2, password);
+                    int rowsInserted = statement.executeUpdate();
+                    System.out.println("Rows Inserted: " + rowsInserted);
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        btnNuke.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                System.out.println("Nuking user database...");
+                try (Connection c = MySQLConnection.getConnection();
+                     PreparedStatement statement = c.prepareStatement(
+                             "DELETE FROM users"
+                     )) {
+                    int rowsDeleted = statement.executeUpdate();
+                    System.out.println("Rows Deleted: " + rowsDeleted);
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             }
         });
