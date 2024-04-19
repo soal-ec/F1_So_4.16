@@ -30,6 +30,7 @@ public class HelloApplication extends Application {
 //        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
 //        stage.setTitle("Hello!");
 //        stage.setScene(scene);
+        MySQLConnection.addAdmin();
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -117,44 +118,18 @@ public class HelloApplication extends Application {
                 System.out.println("Logging in...");
                 String username = tfUsername.getText();
                 String password = pfPassword.getText();
-                try (Connection c = MySQLConnection.getConnection()) {
-                    Statement statement = c.createStatement();
-                    String query = "SELECT username FROM users";
-                    statement.execute(query);
-                    System.out.println("Read Data Successful");
-                    ResultSet res = statement.executeQuery(query);
-                    while (res.next()) {
-                        if (res.getString("username").equals(username)) {
-                            System.out.println("Username found.");
-                            statement = c.createStatement();
-                            query = "SELECT password FROM users WHERE username == ?";
-                            //statement.setString(1, password);
-                            statement.execute(query);
-                            System.out.println("Read Data Successful");
-                            res = statement.executeQuery(query);
-
-                            if (res.getString("password").equals(password)) {
-                                System.out.println("Welcome to the club");
-                                try {
-                                    Parent p = FXMLLoader.load(getClass().getResource("homepage.fxml"));
-                                    Scene s = new Scene(p);
-                                    stage.setScene(s);
-                                    stage.show();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                                System.out.println("Incorrect Password.");
-                                return;
-                            }
-                        }
+                if (MySQLConnection.findUser(username, password)) {
+                    System.out.println("Welcome to the club");
+                    Parent p;
+                    try {
+                        p = FXMLLoader.load(getClass().getResource("homepage.fxml"));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
-                    System.out.println("Username not found.");
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
+                    Scene s = new Scene(p);
+                    stage.setScene(s);
+                    stage.show();
                 }
-
             }
         });
 
@@ -164,23 +139,11 @@ public class HelloApplication extends Application {
                 System.out.println("Registering user...");
                 String username = tfUsername.getText();
                 String password = pfPassword.getText();
-                if (username.equals("") || password.equals("")) {
+                if (username.isEmpty() || password.isEmpty()) {
                     System.out.println("Cannot register empty fields.");
                     return;
                 }
-                try (Connection c = MySQLConnection.getConnection();
-                     PreparedStatement statement = c.prepareStatement(
-                             "INSERT INTO users (username, password) VALUES (?, ?)"
-                     )) {
-                    statement.setString(1, username);
-                    statement.setString(2, password);
-                    int rowsInserted = statement.executeUpdate();
-                    System.out.println("Rows Inserted: " + rowsInserted);
-
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
-                }
+                MySQLConnection.addUser(username, password);
             }
         });
 
@@ -188,17 +151,7 @@ public class HelloApplication extends Application {
             @Override
             public void handle(ActionEvent actionEvent) {
                 System.out.println("Nuking user database...");
-                try (Connection c = MySQLConnection.getConnection();
-                     PreparedStatement statement = c.prepareStatement(
-                             "DELETE FROM users"
-                     )) {
-                    int rowsDeleted = statement.executeUpdate();
-                    System.out.println("Rows Deleted: " + rowsDeleted);
-
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
-                }
+                MySQLConnection.nukeDB();
             }
         });
 
