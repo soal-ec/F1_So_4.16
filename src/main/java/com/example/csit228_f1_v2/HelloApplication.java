@@ -11,9 +11,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -24,50 +24,54 @@ import java.io.IOException;
 import java.sql.*;
 
 public class HelloApplication extends Application {
+    // personal delete acc
     @Override
     public void start(Stage stage) throws IOException {
 //        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("login-view.fxml"));
 //        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
 //        stage.setTitle("Hello!");
 //        stage.setScene(scene);
-        MySQLConnection.addAdmin();
+
+        Text txtWelcome = new Text(Words.TITLE);
+        txtWelcome.setFont(Font.font(Words.FONT, FontWeight.EXTRA_BOLD, Words.BIGTEXT));
+        txtWelcome.setFill(Paint.valueOf(Words.TXTCOLOR));
+        txtWelcome.setTextAlignment(TextAlignment.CENTER);
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
-        Text txtWelcome = new Text("Welcome to CIT");
-        txtWelcome.setFont(Font.font("Chiller", FontWeight.EXTRA_BOLD, 69));
-        txtWelcome.setFill(Color.RED);
-//        grid.setAlignment();
+        grid.setStyle("-fx-background-color: #ffffff;");
         grid.setPadding(new Insets(20));
-//        grid.
-        txtWelcome.setTextAlignment(TextAlignment.CENTER);
         grid.add(txtWelcome, 0, 0, 3, 1);
+        grid.setBorder(new Border(new BorderStroke(Paint.valueOf(Words.TXTCOLOR), BorderStrokeStyle.SOLID, null, BorderWidths.FULL)));
+
+        txtWelcome.minWidth(grid.getWidth());
 
         Label lbUsername = new Label("Username: ");
-        lbUsername.setTextFill(Color.LIGHTSKYBLUE);
-        lbUsername.setFont(Font.font(30));
+        lbUsername.setTextFill(Paint.valueOf(Words.TXTCOLOR));
+        lbUsername.setFont(Font.font(Words.SMALLTEXT));
         grid.add(lbUsername, 0, 1);
 
         TextField tfUsername = new TextField();
         grid.add(tfUsername, 1, 1);
-        tfUsername.setFont(Font.font(30));
+        tfUsername.setFont(Font.font(16));
 //        tfUsername.setMaxWidth(150);
 
-        Label lbPassword = new Label("Password");
-        lbPassword.setFont(Font.font(30));
-        lbPassword.setTextFill(Color.CHARTREUSE);
+        Label lbPassword = new Label("Password: ");
+        lbPassword.setTextFill(Paint.valueOf(Words.TXTCOLOR));
+        lbPassword.setFont(Font.font(Words.SMALLTEXT));
         grid.add(lbPassword, 0, 2);
 
         PasswordField pfPassword = new PasswordField();
-        pfPassword.setFont(Font.font(30));
+        pfPassword.setFont(Font.font(Words.SMALLTEXT));
         grid.add(pfPassword, 1, 2);
 
         TextField tmpPassword = new TextField(pfPassword.getText());
-        tmpPassword.setFont(Font.font(30));
+        tmpPassword.setFont(Font.font(Words.SMALLTEXT));
         grid.add(tmpPassword, 1, 2);
         tmpPassword.setVisible(false);
 
-        ToggleButton btnShow = new ToggleButton("( )");
+        ToggleButton btnShow = new ToggleButton("<o>");
+        btnShow.setFont(Font.font(Words.FONT, FontWeight.THIN, Words.SMALLTEXT));
 //        btnShow.setOnAction(new EventHandler<ActionEvent>() {
 //            @Override
 //            public void handle(ActionEvent actionEvent) {
@@ -87,7 +91,6 @@ public class HelloApplication extends Application {
                 tmpPassword.setVisible(true);
             }
         });
-
         EventHandler<MouseEvent> release = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -95,21 +98,20 @@ public class HelloApplication extends Application {
                 pfPassword.setText(tmpPassword.getText());
             }
         };
-
         btnShow.setOnMouseReleased(release);
         btnShow.setOnMouseExited(release);
         grid.add(btnShow, 2,2);
 
         Button btnLogin = new Button("Log In");
-        btnLogin.setFont(Font.font(40));
+        btnLogin.setFont(Font.font(Words.FONT, FontWeight.MEDIUM, Words.SMALLTEXT));
         grid.add(btnLogin, 0, 3, 2, 1);
 
         Button btnRegister = new Button("Register");
-        btnLogin.setFont(Font.font(40));
+        btnRegister.setFont(Font.font(Words.FONT, FontWeight.MEDIUM, Words.SMALLTEXT));
         grid.add(btnRegister, 0, 4, 2, 1);
 
         Button btnNuke = new Button("Nuke DB");
-        btnLogin.setFont(Font.font(40));
+        btnNuke.setFont(Font.font(Words.FONT, FontWeight.MEDIUM, Words.SMALLTEXT));
         grid.add(btnNuke, 0, 5, 2, 1);
 
         btnLogin.setOnAction(new EventHandler<ActionEvent>() {
@@ -118,8 +120,7 @@ public class HelloApplication extends Application {
                 System.out.println("Logging in...");
                 String username = tfUsername.getText();
                 String password = pfPassword.getText();
-                if (MySQLConnection.findUser(username, password)) {
-                    System.out.println("Welcome to the club");
+                if (MySQLConnection.findSheet(username, password)) {
                     Parent p;
                     try {
                         p = FXMLLoader.load(getClass().getResource("homepage.fxml"));
@@ -143,7 +144,7 @@ public class HelloApplication extends Application {
                     System.out.println("Cannot register empty fields.");
                     return;
                 }
-                MySQLConnection.addUser(username, password);
+                MySQLConnection.addSheet(username, password);
             }
         });
 
@@ -155,11 +156,10 @@ public class HelloApplication extends Application {
             }
         });
 
-        Scene scene = new Scene(grid, 700, 500, Color.BLACK);
+        Scene scene = new Scene(grid, 700, 500, Paint.valueOf(Words.BGCOLOR));
         stage.setScene(scene);
-        scene.setFill(Color.CORNFLOWERBLUE);
+        scene.setFill(Paint.valueOf(Words.BGCOLOR));
         stage.show();
-        txtWelcome.minWidth(grid.getWidth());
     }
 
     public static void main(String[] args) {
