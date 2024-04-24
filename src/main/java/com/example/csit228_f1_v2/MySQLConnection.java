@@ -1,6 +1,7 @@
 package com.example.csit228_f1_v2;
 
 import java.sql.*;
+import java.util.Objects;
 
 public class MySQLConnection {
     static Integer session_id;
@@ -66,10 +67,24 @@ public class MySQLConnection {
              PreparedStatement statement = c.prepareStatement(
                      "UPDATE tblsheets SET name=?, con=?, str=?, wis=? WHERE id=?"
              )) {
+            String[] dbses = MySQLConnection.getSession();
+            for (int i = 0; i < 4; i++) {
+                if (ses[i] == null) {
+                    if (dbses[i] != null) ses[i] = dbses[i];
+                    else ses[i] = null;
+                }
+            }
             statement.setString(1, ses[0]);
-            statement.setString(2, ses[1]);
-            statement.setString(3, ses[2]);
-            statement.setString(4, ses[3]);
+
+            if (ses[1] == null || Objects.equals(ses[1], "")) statement.setNull(2, Types.INTEGER); // Set to NULL if ses[1] is null
+            else statement.setInt(2, Integer.parseInt(ses[1]));
+
+            if (ses[2] == null || Objects.equals(ses[2], "")) statement.setNull(3, Types.INTEGER); // Set to NULL if ses[2] is null
+            else statement.setInt(3, Integer.parseInt(ses[2]));
+
+            if (ses[3] == null || Objects.equals(ses[3], ""))  statement.setNull(4, Types.INTEGER); // Set to NULL if ses[3] is null
+            else statement.setInt(4, Integer.parseInt(ses[3]));
+
             statement.setString(5, String.valueOf(session_id));
             boolean yeah = statement.execute();
             // System.out.println("Updated: " + yeah);
@@ -146,6 +161,20 @@ public class MySQLConnection {
             createTable();
         } else {
             e.printStackTrace();
+        }
+    }
+
+    public static void deleteEntry() {
+        try (Connection c = MySQLConnection.getConnection();
+             PreparedStatement statement = c.prepareStatement(
+                     "DELETE FROM tblsheets WHERE id=?"
+             )) {
+            statement.setString(1, String.valueOf(session_id));
+            boolean qwerty = statement.execute();
+            System.out.println("Deleted Character: " + qwerty);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 

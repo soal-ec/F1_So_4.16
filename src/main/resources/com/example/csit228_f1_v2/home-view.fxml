@@ -10,5 +10,5 @@
     </padding>
 
     <Label fx:id="welcomeText" />
-    <Button onAction="#onHelloButtonClick" text="Log Out" />
+    <Button text="Log Out" />
 </VBox>

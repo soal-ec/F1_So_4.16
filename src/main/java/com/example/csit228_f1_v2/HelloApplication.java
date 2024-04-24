@@ -17,14 +17,14 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.io.IOException;
-import java.util.Stack;
 
 public class HelloApplication extends Application {
-    private Stage primaryStage = new Stage();
-    private Stack<Scene> sceneStack = new Stack<>();
-    Integer session_id = -1;
+    //private Stage primaryStage = new Stage();
+    //private Stack<Scene> sceneStack = new Stack<>();
+    // Integer session_id = -1;
     @Override
     public void start(Stage stage) throws IOException {
 //        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("login-view.fxml"));
@@ -122,7 +122,7 @@ public class HelloApplication extends Application {
                 String username = tfUsername.getText();
                 String password = pfPassword.getText();
                 if (MySQLConnection.logInSheet(username, password) != -1) {
-                    nextScene("homepage.fxml");
+                    nextScene("homepage.fxml", btnLogin.getScene().getWindow());
                 }
             }
         });
@@ -155,7 +155,7 @@ public class HelloApplication extends Application {
         stage.show();
     }
 
-    public void nextScene(String fxml) {
+    public void nextScene(String fxml, Window window) {
         Parent p;
         try {
             p = FXMLLoader.load(getClass().getResource(fxml));
@@ -163,10 +163,12 @@ public class HelloApplication extends Application {
             throw new RuntimeException(e);
         }
         // System.out.println("ses " + session_id);
-        HomeController.initialize();
-        sceneStack.push(primaryStage.getScene());
-        primaryStage.setScene(new Scene(p));
-        primaryStage.show();
+        // sceneStack.push(primaryStage.getScene());
+        //primaryStage.setScene(new Scene(p));
+        Stage stage = (Stage) window;
+        Scene s = new Scene(p);
+        stage.setScene(s);
+        stage.show();
     }
 
     public static void main(String[] args) {

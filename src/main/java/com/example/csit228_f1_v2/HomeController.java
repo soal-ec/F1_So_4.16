@@ -15,22 +15,28 @@ import java.sql.SQLException;
 import java.util.Objects;
 
 public class HomeController {
-
-    public static GridPane gridCharSheet = new GridPane();
+    @FXML
+    private GridPane gridCharSheet = new GridPane();
+    @FXML
     public Button btnUpdate= new Button("Update");
+    @FXML
     public Button btnExit = new Button("Exit");
-    public static Label lb0 = new Label();
-    public static Label lb1 = new Label();
-    public static Label lb2 = new Label();
-    public static Label lb3 = new Label();
+    @FXML
+    public Button btnDelete = new Button();
+
+
+    public Label lb0 = new Label();
+    public Label lb1 = new Label();
+    public Label lb2 = new Label();
+    public Label lb3 = new Label();
     public TextField tf0 = new TextField();
     public TextField tf1 = new TextField();
     public TextField tf2 = new TextField();
     public TextField tf3 = new TextField();
 
 //    public ToggleButton tbNight;
-    public static ProgressIndicator piProgress = new ProgressIndicator();
-    public static int progress;
+    public ProgressIndicator piProgress = new ProgressIndicator();
+    public int progress;
 
 
 //    public void onSliderChange() {
@@ -52,7 +58,7 @@ public class HomeController {
 //    }
 
     @FXML
-    public static void initialize() {
+    public void initialize() {
         String[] ses = MySQLConnection.getSession();
         lb0.setText("Name: " + ses[0]);
         lb0.setTextFill(Paint.valueOf(Words.TXTCOLOR));
@@ -121,17 +127,31 @@ public class HomeController {
         piProgress.layout();
     }
     public void exitSession()  {
-        Stage stage = (Stage) btnExit.getScene().getWindow();
-        stage.close();
-        Parent p;
+        Stage stage = (Stage) gridCharSheet.getScene().getWindow();
+        if (stage == null) {
+            System.out.println("Stage is null. Sorry cry about it");
+            return;
+        }
         try {
-            p = FXMLLoader.load(getClass().getResource("home-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("home-view.fxml"));
+            Parent p = loader.load();
+            Scene s = new Scene(p);
+            stage.setScene(s);
+            HelloApplication helloApp = new HelloApplication();
+            helloApp.start(stage);
+            stage.show();
+
+
+            // HelloController helloController = loader.getController();
+            // helloController.launch();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        //HelloApplication.sceneStack
-        Scene s = new Scene(p);
-        stage.setScene(s);
-        stage.show();
+    }
+
+    public void deleteChar() {
+        System.out.println("Deleting...");
+        MySQLConnection.deleteEntry();
+        exitSession();
     }
 }

@@ -20,17 +20,17 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <ProgressIndicator fx:id="piProgress" maxWidth="1.7976931348623157E308" progress="0.9" GridPane.columnSpan="2147483647" GridPane.rowIndex="6" />
             <Button fx:id="btnUpdate" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#update" text="Update" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
             <TextField fx:id="tf0" GridPane.columnIndex="1" />
             <TextField fx:id="tf1" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <TextField fx:id="tf2" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <TextField fx:id="tf3" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <Button fx:id="btnExit" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#exitSession" text="Exit" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
-            <Label fx:id="lb0" text="Name  : " />
-            <Label fx:id="lb1" text="CON : " GridPane.rowIndex="1" />
-            <Label fx:id="lb2" text="STR : " GridPane.rowIndex="2" />
-            <Label fx:id="lb3" text="WIS : " GridPane.rowIndex="3" />
+            <Label fx:id="lb0" text="Name : ..." />
+            <Label fx:id="lb1" text="CON : 0 " GridPane.rowIndex="1" />
+            <Label fx:id="lb2" text="STR : 0" GridPane.rowIndex="2" />
+            <Label fx:id="lb3" text="WIS : 0" GridPane.rowIndex="3" />
+            <Button fx:id="btnDelete" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#deleteChar" text="DELETE CHARACTER" GridPane.columnSpan="2147483647" GridPane.rowIndex="6" />
          </children>
       </GridPane>
    </children>
