@@ -9,10 +9,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -21,10 +19,12 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.*;
+import java.util.Stack;
 
 public class HelloApplication extends Application {
-    // personal delete acc
+    private Stage primaryStage = new Stage();
+    private Stack<Scene> sceneStack = new Stack<>();
+    Integer session_id = -1;
     @Override
     public void start(Stage stage) throws IOException {
 //        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("login-view.fxml"));
@@ -104,7 +104,7 @@ public class HelloApplication extends Application {
 
         Button btnLogin = new Button("Log In");
         btnLogin.setFont(Font.font(Words.FONT, FontWeight.MEDIUM, Words.SMALLTEXT));
-        grid.add(btnLogin, 0, 3, 2, 1);
+        grid.add(btnLogin, 0, 3, 3, 1);
 
         Button btnRegister = new Button("Register");
         btnRegister.setFont(Font.font(Words.FONT, FontWeight.MEDIUM, Words.SMALLTEXT));
@@ -112,7 +112,8 @@ public class HelloApplication extends Application {
 
         Button btnNuke = new Button("Nuke DB");
         btnNuke.setFont(Font.font(Words.FONT, FontWeight.MEDIUM, Words.SMALLTEXT));
-        grid.add(btnNuke, 0, 5, 2, 1);
+        btnNuke.setPrefWidth(btnNuke.getMaxWidth());
+        grid.add(btnNuke, 0, 5, 3, 1);
 
         btnLogin.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -120,16 +121,8 @@ public class HelloApplication extends Application {
                 System.out.println("Logging in...");
                 String username = tfUsername.getText();
                 String password = pfPassword.getText();
-                if (MySQLConnection.findSheet(username, password)) {
-                    Parent p;
-                    try {
-                        p = FXMLLoader.load(getClass().getResource("homepage.fxml"));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    Scene s = new Scene(p);
-                    stage.setScene(s);
-                    stage.show();
+                if (MySQLConnection.logInSheet(username, password) != -1) {
+                    nextScene("homepage.fxml");
                 }
             }
         });
@@ -160,6 +153,20 @@ public class HelloApplication extends Application {
         stage.setScene(scene);
         scene.setFill(Paint.valueOf(Words.BGCOLOR));
         stage.show();
+    }
+
+    public void nextScene(String fxml) {
+        Parent p;
+        try {
+            p = FXMLLoader.load(getClass().getResource(fxml));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        // System.out.println("ses " + session_id);
+        HomeController.initialize();
+        sceneStack.push(primaryStage.getScene());
+        primaryStage.setScene(new Scene(p));
+        primaryStage.show();
     }
 
     public static void main(String[] args) {

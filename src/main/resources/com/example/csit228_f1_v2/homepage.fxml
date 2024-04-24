@@ -1,27 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: BLACK;" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.csit228_f1_v2.HomeController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #FAF5F1; -fx-border-style: SOLID; -fx-border-width: 5px; -fx-border-color: #F2E8DA;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.csit228_f1_v2.HomeController">
    <children>
-      <ComboBox layoutX="84.0" layoutY="76.0" prefWidth="150.0" />
-      <ChoiceBox layoutX="84.0" layoutY="124.0" prefWidth="150.0" />
-      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="386.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true" />
-      <ProgressBar fx:id="pbProgress" layoutX="252.0" layoutY="334.0" prefWidth="200.0" progress="0.33" />
-      <ProgressIndicator fx:id="piProgress" layoutX="473.0" layoutY="314.0" progress="0.9" />
-      <Spinner layoutX="85.0" layoutY="175.0" />
-      <SplitMenuButton layoutX="84.0" layoutY="33.0" mnemonicParsing="false" text="SplitMenuButton">
-        <items>
-          <MenuItem mnemonicParsing="false" text="Action 1" />
-          <MenuItem mnemonicParsing="false" text="Action 2" />
-        </items>
-      </SplitMenuButton>
-      <Slider fx:id="slSlider" layoutX="352.0" layoutY="69.0" onMouseDragged="#onSliderChange" value="90.0" />
-      <ToggleButton fx:id="tbNight" layoutX="466.0" layoutY="20.0" mnemonicParsing="false" onAction="#onNightModeClick" text="Night Mode" />
-      <TreeView layoutX="386.0" layoutY="100.0" prefHeight="200.0" prefWidth="200.0" />
-      <PieChart layoutX="200.0" layoutY="175.0" prefHeight="129.0" prefWidth="149.0" />
+      <GridPane fx:id="gridCharSheet" alignment="CENTER" layoutX="75.0" layoutY="50.0" prefHeight="300.0" prefWidth="450.0" style="-fx-border-color: #F2E8DA; -fx-border-width: 5px; -fx-border-style: SOLID;">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <ProgressIndicator fx:id="piProgress" maxWidth="1.7976931348623157E308" progress="0.9" GridPane.columnSpan="2147483647" GridPane.rowIndex="6" />
+            <Button fx:id="btnUpdate" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#update" text="Update" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
+            <TextField fx:id="tf0" GridPane.columnIndex="1" />
+            <TextField fx:id="tf1" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="tf2" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="tf3" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Button fx:id="btnExit" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#exitSession" text="Exit" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
+            <Label fx:id="lb0" text="Name  : " />
+            <Label fx:id="lb1" text="CON : " GridPane.rowIndex="1" />
+            <Label fx:id="lb2" text="STR : " GridPane.rowIndex="2" />
+            <Label fx:id="lb3" text="WIS : " GridPane.rowIndex="3" />
+         </children>
+      </GridPane>
    </children>
 </AnchorPane>
